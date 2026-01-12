@@ -25,4 +25,6 @@ export const errorHandler = (
     message: err.message,
     stack: process.env.NODE_ENV === "production" ? "🥞" : err.stack,
   });
+
+  next(err);
 };
