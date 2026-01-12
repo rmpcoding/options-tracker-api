@@ -7,13 +7,13 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext", // commonjs is the older way, while this is more modern as it supports ESM and CJS
-    "target": "es6", // more stable
+    "module": "nodenext",
+    "target": "es2024",
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
-    "types": [],
+    "types": ["node"],
     // For nodejs:
-    // "lib": ["esnext"],
+    "lib": ["ES2024"],
     // "types": ["node"],
     // and npm install -D @types/node
 
@@ -43,6 +43,5 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  },
-  "lib": ["es2015"]
+  }
 }
