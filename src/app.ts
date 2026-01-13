@@ -1,10 +1,13 @@
 import api from "./api/api.js";
 import { errorHandler, notFound } from "./middleware/middleware.js";
+
+import bodyParser from "body-parser";
 import { config } from "dotenv";
-import express from "express";
-import morgan from "morgan";
-import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import cors from "cors";
+import express from "express";
+import helmet from "helmet";
+import morgan from "morgan";
 
 config();
 
@@ -14,6 +17,9 @@ app.use(morgan("dev"));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+
+app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
+app.use(cookieParser());
 
 app.use("/api/", api);
 
