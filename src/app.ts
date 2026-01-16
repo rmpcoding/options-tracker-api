@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 app.use(cookieParser());
 
-app.use("/api/", api);
+app.use("/api", api);
 
 app.use(notFound);
 app.use(errorHandler);
