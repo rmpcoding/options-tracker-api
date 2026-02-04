@@ -1,4 +1,4 @@
-import api from "./api/api.js";
+import routes from "./routes";
 import { errorHandler, notFound } from "./middleware/middleware.js";
 
 import bodyParser from "body-parser";
@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 app.use(cookieParser());
 
-app.use("/api/", api);
+app.use(routes);
 
 app.use(notFound);
 app.use(errorHandler);

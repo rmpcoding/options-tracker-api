@@ -1,0 +1,100 @@
+import { Request, response, Response } from "express";
+import _ from "lodash";
+import { Model } from "mongoose";
+
+import logger from "../logs/logger";
+import appRegistry from "../app.registry"; // unsure what the registry does
+import appBroker from "../app.broker"; // unsure what the app broker does
+
+// import BaseService from '../services/base.service'; // <-TODO refactor, switch out logger, AppRegistry and AppBroker for baseService class
+
+abstract class BaseController {
+  // Base controller logic
+  model: Model<any>;
+  _: typeof _;
+  logger: typeof logger;
+  registry: typeof appRegistry;
+  broker: typeof appBroker;
+  seed?(): void;
+
+  constructor(model: Model<any>) {
+    this.model = model;
+    this.logger = logger;
+    this._ = _;
+    this.registry = appRegistry;
+    this.broker = appBroker;
+
+    if (typeof this.seed === "function") {
+      this.seed();
+    }
+  }
+
+  // Generic list implementation
+  async list(req: Request, res: Response) {
+    try {
+      // need to add pagination later
+      const results = await this.model.find();
+
+      res.status(200).json({
+        data: results,
+        total: results.length,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+  // Generic getById implementation
+  async getById(req: Request, res: Response) {
+    try {
+      res.status(200).json(await this.model.findById(req.params._id));
+    } catch (error) {}
+  }
+
+  // Generic create implementation
+  async create(req: Request, res: Response) {
+    try {
+      const entry = new this.model(req.body);
+      res.status(201).json(await entry.save());
+    } catch (error) {
+      res.status(400).json({ error: error?.toString() });
+    }
+  }
+
+  // Generic update implementation
+  async update(req: Request, res: Response) {
+    try {
+      res.status(200).json(
+        await this.model.findByIdAndUpdate(req.params._id, req.body, {
+          new: true,
+        })
+      );
+    } catch (error) {}
+  }
+
+  // Generic delete implementation
+  async delete(req: Request, res: Response) {
+    try {
+      this.logger.info(`Deleting item with id: ${req.params._id}`);
+      if (!req.params._id) throw new Error("No ID provided");
+
+      const removedItem = await this.model.findByIdAndDelete(req.params._id);
+
+      this.logger.info(`Deleted item: ${JSON.stringify(removedItem)}`);
+
+      res.status(200).json({
+        message: "Item deleted successfully",
+        data: removedItem,
+      });
+    } catch (error) {
+      this.logger.error("Error deleting item:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+}
+
+export default BaseController;
+
+/** Robert's code */
+
+class Controller extends BaseController {}
