@@ -1,4 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
+import timestampMiddleware from "./timestamp.middleware";
+import tokenValidator from "./token.validator.middleware";
+
+export { timestampMiddleware, tokenValidator };
 
 export const notFound = (req: Request, res: Response, next: NextFunction) => {
   res.status(404);
@@ -17,7 +21,7 @@ export const errorHandler = (
   err: tempError, // TODO: abstract into its own error class
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const statusCode = err.statusCode || err.statusCode || 500;
   res.status(statusCode);

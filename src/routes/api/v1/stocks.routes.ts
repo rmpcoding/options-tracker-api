@@ -1,24 +1,21 @@
 import { Router } from "express";
 
+import { stocksController } from "../../../controllers";
+import { timestampMiddleware } from "../../../middlewares/middleware";
+
 const router = Router();
+
+router.use(timestampMiddleware);
 
 router
   .route("/")
-  .get((req, res) => {
-    res.send("getstocks");
-  })
-  .post((req, res) => res.send("create stock"));
+  .get(stocksController.list.bind(stocksController))
+  .post(stocksController.create.bind(stocksController));
 
 router
   .route("/:_id")
-  .get((req, res) => {
-    res.send("get a stock by id");
-  })
-  .put((req, res) => {
-    res.send("update a stock by id");
-  })
-  .delete((req, res) => {
-    res.send("delete a stock by id");
-  });
+  .get(stocksController.getById.bind(stocksController))
+  .put(stocksController.update.bind(stocksController))
+  .delete(stocksController.delete.bind(stocksController));
 
 export default router;

@@ -1,24 +1,26 @@
 import { Router } from "express";
 
+import { usersController } from "../../../controllers";
+import {
+  timestampMiddleware,
+  tokenValidator,
+} from "../../../middlewares/middleware";
+
 const router = Router();
+
+router.use(timestampMiddleware);
 
 router
   .route("/")
-  .get((req, res) => {
-    res.send("getUsers");
-  })
-  .post((req, res) => res.send("create user"));
+  .get(usersController.list.bind(usersController))
+  .post(usersController.create.bind(usersController));
+
+router.get("/me", tokenValidator, usersController.me.bind(usersController));
 
 router
   .route("/:_id")
-  .get((req, res) => {
-    res.send("get a user by id");
-  })
-  .put((req, res) => {
-    res.send("update a user by id");
-  })
-  .delete((req, res) => {
-    res.send("delete a user by id");
-  });
+  .get(usersController.getById.bind(usersController))
+  .put(usersController.update.bind(usersController))
+  .delete(usersController.delete.bind(usersController));
 
 export default router;

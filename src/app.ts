@@ -1,13 +1,14 @@
-import routes from "./routes";
-import { errorHandler, notFound } from "./middleware/middleware.js";
-
 import bodyParser from "body-parser";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import expressListEndpoints from "express-list-endpoints";
 import helmet from "helmet";
 import morgan from "morgan";
+
+import routes from "./routes";
+import { errorHandler, notFound } from "./middlewares/middleware.js";
 
 config();
 
@@ -22,6 +23,10 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 app.use(cookieParser());
 
 app.use(routes);
+app.get("/", (req, res) => {
+  const endpoints = expressListEndpoints(routes);
+  res.send(endpoints);
+});
 
 app.use(notFound);
 app.use(errorHandler);

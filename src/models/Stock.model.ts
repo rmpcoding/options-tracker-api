@@ -1,6 +1,7 @@
 import { model, Model, Schema, Types } from "mongoose";
 
 interface IStock {
+  _id: Types.ObjectId | string;
   symbol: string;
   companyName: string;
   userId: Types.ObjectId | string; // Using TypeScript, what do we expect this value to be? String or User._id?
@@ -14,7 +15,7 @@ interface IStock {
 
 interface IStockModel extends Model<IStock> {}
 
-const StockSchema: Schema<IStock> = new Schema<IStock>({
+const StockSchema: Schema<IStock> = new Schema({
   symbol: {
     type: String,
     required: true,
@@ -54,4 +55,6 @@ const StockSchema: Schema<IStock> = new Schema<IStock>({
   },
 });
 
-const stockSchema = model<IStock, IStockModel>("stock", StockSchema);
+const Stock = model<IStock, IStockModel>("stock", StockSchema);
+
+export default Stock;
